@@ -3,8 +3,7 @@
 //  Licensed under the MIT License (MIT). See License.txt in the repo root for license information.
 // ------------------------------------------------------------
 
-#if NET45 || NET40
-using System.Runtime.Remoting.Messaging;
+using System.Threading;
 
 namespace Microsoft.Diagnostics.Context
 {
@@ -16,7 +15,7 @@ namespace Microsoft.Diagnostics.Context
     /// </remarks>
     public class ContextResolver
     {
-        private const string Slot = "x-ms-correlation-id-slot";
+        private static readonly AsyncLocal<object> Context = new AsyncLocal<object>();
 
         /// <summary>
         /// Sets context.
@@ -26,7 +25,7 @@ namespace Microsoft.Diagnostics.Context
         /// <returns>Context value</returns>
         public static TContext SetContext<TContext>(TContext context)
         {
-            CallContext.LogicalSetData(Slot, context);
+            Context.Value = context;
             return context;
         }
 
@@ -37,7 +36,7 @@ namespace Microsoft.Diagnostics.Context
         /// <returns>Context value</returns>
         public static TContext GetContext<TContext>()
         {
-            return (TContext)CallContext.LogicalGetData(Slot);
+            return (TContext)Context.Value;
         }
 
         /// <summary>
@@ -45,8 +44,7 @@ namespace Microsoft.Diagnostics.Context
         /// </summary>
         public static void ClearContext()
         {
-            CallContext.LogicalSetData(Slot, null);
+            Context.Value = null;
         }
     }
 }
-#endif

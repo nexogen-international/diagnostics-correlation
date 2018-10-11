@@ -24,16 +24,24 @@ namespace Microsoft.Diagnostics.Correlation.Common.Http
         public void UpdateRequest(CorrelationContext context, HttpRequestMessage request)
         {
             if (request == null)
+            {
                 throw new ArgumentNullException(nameof(request));
+            }
 
             if (context == null)
+            {
                 throw new ArgumentNullException(nameof(context));
+            }
 
-            if (request.Headers.Contains(CorrelationHeaderInfo.CorrelationIdHeaderName))
-                throw new ArgumentException($"{CorrelationHeaderInfo.CorrelationIdHeaderName} header already exists");
+            if (!request.Headers.Contains(CorrelationHeaderInfo.CorrelationIdHeaderName))
+            {
+                request.Headers.Add(CorrelationHeaderInfo.CorrelationIdHeaderName, context.CorrelationId);
+            }
 
-            request.Headers.Add(CorrelationHeaderInfo.CorrelationIdHeaderName, context.CorrelationId);
-            request.Headers.Add(CorrelationHeaderInfo.RequestIdHeaderName, Guid.NewGuid().ToString());
+            if (!request.Headers.Contains(CorrelationHeaderInfo.RequestIdHeaderName))
+            {
+                request.Headers.Add(CorrelationHeaderInfo.RequestIdHeaderName, Guid.NewGuid().ToString());
+            }
         }
     }
 }

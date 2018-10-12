@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Version>1.0.3</Version>  
     <TargetFrameworks>net46;net45;net40</TargetFrameworks>
     <DelaySign>true</DelaySign>
     <AssemblyName>Microsoft.Diagnostics.Correlation</AssemblyName>
